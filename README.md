@@ -38,15 +38,11 @@ See [`docs/GAP_ANALYSIS.md`](docs/GAP_ANALYSIS.md). Short version: add audio (ze
 
 Developed and debugged with AI assistance — **Anthropic Claude** (Claude Code) for implementation and **OpenAI Codex** for review. Human direction owned the design and priorities. The 2026-07-02 pass set up this repository and fixed the vignette blend-mode bug that was blacking out the 3D view.
 
-## Use & credit
+## Use
 
-This project is **public and free to use, fork, and build upon** — for your own
-games, learning, or anything else. If you do use the code or build on it, **please
-credit** [MidwestMysteryMeat / Thresher's Hope](https://github.com/MidwestMysteryMeat/ThreshersHope). A
-link back is all that's asked. Not required by the license, just appreciated. 🙏
+This project is **free to use, fork, and build upon** — for your own games,
+learning, or anything else. No credit or attribution needed.
 
 ## License
 
-MIT — see [LICENSE](LICENSE). The renderer and game code are original. MIT already
-lets anyone use this freely; the credit request above is a courtesy, not a legal
-condition.
+MIT — see [LICENSE](LICENSE). The renderer and game code are original.
