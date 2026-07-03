@@ -43,6 +43,13 @@ Developed and debugged with AI assistance — **Anthropic Claude** (Claude Code)
 This project is **free to use, fork, and build upon** — for your own games,
 learning, or anything else. No credit or attribution needed.
 
-## License
+## License & attribution
 
-MIT — see [LICENSE](LICENSE). The renderer and game code are original.
+MIT — see [LICENSE](LICENSE).
+
+The raycasting renderer is based on the classic **DDA raycasting algorithm** and
+was built with reference to existing open-source Love2D/Lua raycaster
+implementations and tutorials (found and adapted with AI assistance during
+development). It is not a wholly original renderer. If you plan to redistribute
+this code, note that portions may derive from third-party sources that carry
+their own licenses — verify and preserve those before publishing.
