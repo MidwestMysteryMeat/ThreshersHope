@@ -1,0 +1,18 @@
+# OS junk
+.DS_Store
+Thumbs.db
+desktop.ini
+*.lnk
+
+# Love2D runtime binaries (not source)
+*.exe
+*.dll
+*.love
+
+# Saves / logs / temp
+*.log
+*.bak
+saves/
+
+# Claude Code
+.claude/
