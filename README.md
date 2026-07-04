@@ -45,7 +45,7 @@ learning, or anything else. No credit or attribution needed.
 
 ## License & attribution
 
-MIT — see [LICENSE](LICENSE).
+Proprietary — see [LICENSE](LICENSE). Licensed under the **Ephemeral / Proprietary License** (All Rights Reserved with a Sharing Exception).
 
 The raycasting renderer is based on the classic **DDA raycasting algorithm** and
 was built with reference to existing open-source Love2D/Lua raycaster
