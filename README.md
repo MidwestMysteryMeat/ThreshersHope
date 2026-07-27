@@ -53,3 +53,9 @@ implementations and tutorials (found and adapted with AI assistance during
 development). It is not a wholly original renderer. If you plan to redistribute
 this code, note that portions may derive from third-party sources that carry
 their own licenses — verify and preserve those before publishing.
+
+---
+
+<sub>Support development — <a href="https://ko-fi.com/midwestmysterymeat">Ko-fi</a></sub>
+
+<img src=".github/donation-qrcode.png" width="120" alt="Donation QR code">
