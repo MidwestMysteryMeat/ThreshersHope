@@ -41,11 +41,14 @@ Developed and debugged with AI assistance — **Anthropic Claude** (Claude Code)
 ## Use
 
 This project is **free to use, fork, and build upon** — for your own games,
-learning, or anything else. No credit or attribution needed.
+learning, or anything else, commercially or not. Credit is the one condition: see
+the License section below.
 
 ## License & attribution
 
-Proprietary — see [LICENSE](LICENSE). Licensed under the **Ephemeral / Proprietary License** (All Rights Reserved with a Sharing Exception).
+Licensed under the **[Apache License 2.0](LICENSE)** — free to use, modify, fork and build on, commercially or not.
+
+**Credit is required.** Apache-2.0 §4(c)–(d) obliges you to keep the copyright notice and to reproduce [`NOTICE`](NOTICE) in anything you distribute, including binaries and hosted builds. Credit it as `ThreshersHope by MysteryMeat` (https://github.com/MidwestMysteryMeat/ThreshersHope) in your credits screen, About box, or docs. The project name and the MysteryMeat name are not licensed for endorsement or promotion (§6).
 
 The raycasting renderer is based on the classic **DDA raycasting algorithm** and
 was built with reference to existing open-source Love2D/Lua raycaster
