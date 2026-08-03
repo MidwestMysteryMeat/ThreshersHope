@@ -190,7 +190,12 @@ end
 local function getMineTimeForTile(wallType)
     -- If a Resources module is available and provides duration, prefer it
     if Resources and Resources.getForWallType then
-        local info = Resources.getForWallType(wallType)
+        -- getForWallType returns a resource ID *string*, not a definition, so
+        -- indexing it went through the string metatable and was always nil:
+        -- every wall silently used the default time while the HUD showed the
+        -- real per-resource value. Resolve the id to its definition first.
+        local resourceId = Resources.getForWallType(wallType)
+        local info = resourceId and Resources.get and Resources.get(resourceId) or nil
         if info and info.mineTime then
             return info.mineTime
         end

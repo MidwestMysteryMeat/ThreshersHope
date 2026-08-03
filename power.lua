@@ -385,9 +385,13 @@ end
 function Power.syncBuildings(placedBuildings)
     if not placedBuildings then return end
 
-    -- Build a set of keys from the external list for removal detection
+    -- Build a set of keys from the external list for removal detection.
+    -- placedBuildings is a hash keyed "x,y,floor" (see Building.countOnFloor),
+    -- not an array: ipairs walked zero entries, so externalKeys came out empty
+    -- and the removal pass below deleted every registered building. Production
+    -- stayed 0 and isPowered was always false — the grid was permanently dark.
     local externalKeys = {}
-    for _, entry in ipairs(placedBuildings) do
+    for _, entry in pairs(placedBuildings) do
         if entry.tileX and entry.tileY and entry.def then
             local key = tileKey(math_floor(entry.tileX), math_floor(entry.tileY))
             externalKeys[key] = entry

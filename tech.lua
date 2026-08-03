@@ -691,6 +691,13 @@ function Tech.getResearchedList()
     return list
 end
 
+--- Get the researched-tech set keyed by tech id (read-only intent).
+--- Suitable for passing straight to Crafting.canCraft / getAvailableRecipes.
+--- @return table  { [techId] = true, ... }
+function Tech.getResearchedSet()
+    return researched
+end
+
 --- Get the number of researched techs.
 --- @return number
 function Tech.getResearchedCount()

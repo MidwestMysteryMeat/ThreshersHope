@@ -278,6 +278,15 @@ function Survival.consumeFood(amount)
     state.hunger = math_min(state.maxHunger, state.hunger + amount)
 end
 
+--- Restore oxygen (e.g. from an O2 canister or air pocket).
+-- @param amount  O2 points to restore (positive number).
+function Survival.addO2(amount)
+    if not state.alive then return end
+    if amount <= 0 then return end
+
+    state.o2 = math_min(state.maxO2, state.o2 + amount)
+end
+
 -- =============================================================================
 -- Warnings
 -- =============================================================================

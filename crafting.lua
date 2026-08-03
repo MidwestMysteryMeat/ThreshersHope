@@ -172,7 +172,11 @@ local RECIPES = {
         inputs      = { titanium = 3, composite = 2 },
         output      = { id = "dive_suit_mk2", amount = 1 },
         craftTime   = 5.0,
-        techRequired = "research_lab",
+        -- Was "research_lab", a tech id that does not exist in tech.lua, so
+        -- this and the rebreather could never be crafted and the deeper floors
+        -- always dealt unavoidable pressure damage. Gated on the real
+        -- life-support tech these belong to.
+        techRequired = "basic_o2",
         description = "Advanced pressure suit rated for extreme depths.",
     },
     {
@@ -182,7 +186,7 @@ local RECIPES = {
         inputs      = { biofilter = 2, circuit_board = 1 },
         output      = { id = "rebreather", amount = 1 },
         craftTime   = 4.0,
-        techRequired = "research_lab",
+        techRequired = "basic_o2",
         description = "Closed-loop breathing apparatus. Extends dive time.",
     },
     {
@@ -281,9 +285,12 @@ end
 local function deductInputs(inv, inputs)
     for resId, amount in pairs(inputs) do
         inv[resId] = (inv[resId] or 0) - amount
-        -- Clamp to zero to prevent floating-point drift into negatives
+        -- Clamp to zero to prevent floating-point drift into negatives.
+        -- Must stay 0 and NOT become nil: onItemPickup only credits slots that
+        -- already exist, so removing the key meant crafting with your last unit
+        -- of a resource made it unpickupable for the rest of the run.
         if inv[resId] <= 0 then
-            inv[resId] = nil
+            inv[resId] = 0
         end
     end
 end

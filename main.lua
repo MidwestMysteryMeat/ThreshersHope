@@ -202,6 +202,10 @@ local projectiles = {}
 -- Pickup feedback
 local pickupMessages = {}
 local PICKUP_MESSAGE_DURATION = 2.0
+-- Air regained per second while standing in an air pocket during the sinking
+-- phase. Fast enough that a pocket is a real refuge, slow enough that you
+-- still have to move between them.
+local AIR_POCKET_O2_PER_SECOND = 12.0
 
 -- =============================================================================
 -- Enemy spawning
@@ -301,6 +305,11 @@ end
 
 function startSinkingPhase()
     gameState = GAME_STATES.SINKING
+
+    -- Revive. Survival.init() was only ever called from love.load, so
+    -- restarting after death left state.alive false and every input stayed
+    -- gated behind isAlive() — "You died! Press ENTER" looped forever.
+    Survival.init()
 
     -- Generate ship interior using dungeon biome
     map = WorldGen.generate("dungeon", {
@@ -790,6 +799,13 @@ function updateSinkingPhase(dt)
         return
     end
 
+    -- Air pockets: standing somewhere the water has not reached yet refills
+    -- air. Sinking.isPlayerInAirPocket had no callers at all, so the only way
+    -- through the sinking phase was the ENTER skip.
+    if Sinking.isPlayerInAirPocket(player.x, player.y, map) then
+        Survival.addO2(AIR_POCKET_O2_PER_SECOND * dt)
+    end
+
     -- Update flooding during sinking
     Flooding.update(dt, map)
 
@@ -921,10 +937,11 @@ function useConsumable(itemId)
         showMessage("Used med pack (+30 health)", 1.5)
     elseif itemId == "o2_canister" then
         inventory.o2_canister = inventory.o2_canister - 1
-        -- Directly boost O2 via the survival module
-        -- Survival doesn't have addO2, so we'll just show message
-        -- The O2 refills when near O2 generator or in habitat
-        showMessage("O2 canister used (emergency air)", 1.5)
+        -- Actually restores air now. This consumed the canister and only
+        -- printed a message, so the item did nothing and the sinking phase
+        -- could not be survived legitimately.
+        Survival.addO2(50)
+        showMessage("O2 canister used (+50 air)", 1.5)
     elseif itemId == "repair_kit" then
         inventory.repair_kit = inventory.repair_kit - 1
         Survival.heal(15)
@@ -1060,6 +1077,22 @@ end
 -- Stairs
 -- =============================================================================
 
+-- Doors live in one flat module keyed by tile, so they must be rebuilt for the
+-- floor the player is actually on. WorldGen registers floor 1 and notes the set
+-- "will be updated when the player changes floors" — nothing ever did, so upper
+-- floors had open holes where doors belong and floor-1 doors haunted the same
+-- coordinates on every other floor as walk-through walls with "[E] Open Door"
+-- prompts. Same shape as raycaster-core's syncDoorsForCurrentFloor.
+function syncDoorsForCurrentFloor()
+    Doors.init()
+    local floorData = map:getData()
+    if floorData and floorData.doors then
+        for _, door in ipairs(floorData.doors) do
+            Doors.add(door.x, door.y, door.dir)
+        end
+    end
+end
+
 function checkStairs()
     if stairCooldown > 0 then return end
 
@@ -1069,6 +1102,7 @@ function checkStairs()
         if newX and newY then
             player.x = newX
             player.y = newY
+            syncDoorsForCurrentFloor()
 
             local currentFloor = map.currentFloor or 1
             local zoneName = Depth.getZoneName(currentFloor)
@@ -2010,12 +2044,12 @@ function drawInventoryScreen(windowW, windowH)
     love.graphics.print("-- Crafting --", col2X, craftY)
     craftY = craftY + 20
 
-    local recipes = Crafting.getAvailableRecipes(inventory, {})
+    local recipes = Crafting.getAvailableRecipes(inventory, Tech.getResearchedSet())
     if recipes and #recipes > 0 then
         for i, recipe in ipairs(recipes) do
             if i > 12 then break end -- limit display
 
-            local canCraft = Crafting.canCraft(recipe.id, inventory, {})
+            local canCraft = Crafting.canCraft(recipe.id, inventory, Tech.getResearchedSet())
             if canCraft then
                 love.graphics.setColor(0.3, 0.9, 0.5)
             else
@@ -2291,11 +2325,11 @@ function love.keypressed(key)
 
     -- Crafting from inventory screen (number keys)
     if showInventory then
-        local recipes = Crafting.getAvailableRecipes(inventory, {})
+        local recipes = Crafting.getAvailableRecipes(inventory, Tech.getResearchedSet())
         local num = tonumber(key)
         if num and num >= 1 and num <= 9 and recipes and recipes[num] then
             local recipe = recipes[num]
-            if not Crafting.isCrafting() and Crafting.canCraft(recipe.id, inventory, {}) then
+            if not Crafting.isCrafting() and Crafting.canCraft(recipe.id, inventory, Tech.getResearchedSet()) then
                 Crafting.startCraft(recipe.id, inventory)
                 showMessage("Crafting " .. (recipe.name or recipe.id) .. "...", 1.5)
             end
